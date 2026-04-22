@@ -291,6 +291,11 @@ body {
   box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
 }
 
+.neon-select option {
+  background: var(--color-bg-secondary);
+  color: #e2e8f0;
+}
+
 .gradient-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), rgba(139, 92, 246, 0.6), rgba(236, 72, 153, 0.6), transparent);

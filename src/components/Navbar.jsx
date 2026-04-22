@@ -8,10 +8,7 @@ export default function Navbar() {
         </h1>
       </div>
       
-      <div className="ml-auto text-xs font-mono text-cyan-300/60 uppercase tracking-widest">
-        Deck Alpha // Status: Active
-      </div>
-      
+
       {/* Animated underline */}
       <div className="absolute bottom-0 left-0 w-full gradient-line" />
     </nav>

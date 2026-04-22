@@ -17,7 +17,7 @@ export const STAGE_COLORS = {
 export const TEST_CASES = [
   {
     name: '1. No Dependency',
-    instructions: ['ADD R1, R2, R3', 'SUB R4, R5, R6'],
+    instructions: ['ADD R1, R2, R3', 'SUB R4, R5, R6', 'ADD R7, R8, R9'],
   },
   {
     name: '2. RAW Hazard',
@@ -28,25 +28,16 @@ export const TEST_CASES = [
     instructions: ['LW R1, 0(R2)', 'ADD R3, R1, R4'],
   },
   {
-    name: '4. Forwarding Comparison',
-    instructions: ['ADD R1, R2, R3', 'SUB R4, R1, R5', 'AND R6, R4, R7'],
+    name: '4. Chain Dependency',
+    instructions: ['ADD R1, R2, R3', 'SUB R4, R1, R5', 'ADD R6, R4, R7'],
   },
   {
     name: '5. Multiple Dependencies',
-    instructions: [
-      'LW R1, 0(R2)',
-      'ADD R3, R1, R4',
-      'SUB R5, R3, R6',
-      'SW R5, 0(R7)',
-    ],
+    instructions: ['ADD R1, R2, R3', 'ADD R4, R5, R6', 'ADD R7, R1, R4'],
   },
   {
     name: '6. Store Data Hazard',
-    instructions: [
-      'ADD R1, R2, R3',
-      'SW R1, 0(R4)',
-      'LW R5, 4(R6)',
-    ],
+    instructions: ['ADD R1, R2, R3', 'SW R1, 0(R4)'],
   },
 ];
 

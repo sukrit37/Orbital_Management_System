@@ -27,17 +27,29 @@ export function buildSchedule(parsedInstructions, hazards, pipelineType, forward
   );
 
   for (let i = 0; i < numInstr; i++) {
-    // IF and ID always proceed normally (one per cycle)
+    if (i === 0) {
+      stageTimings[0][0] = 1; // IF
+      stageTimings[0][1] = 2; // ID
+      stageTimings[0][2] = 3; // EX
+      for (let s = 3; s < numStages; s++) {
+        stageTimings[0][s] = stageTimings[0][s - 1] + 1;
+      }
+      continue;
+    }
+
+    // Simplified academic model: IF and ID happen sequentially without structural delay
+    // This places ID immediately after IF, accumulating all stalls between ID and EX.
     stageTimings[i][0] = i + 1; // IF
     stageTimings[i][1] = stageTimings[i][0] + 1; // ID
 
-    let exCycle = stageTimings[i][1] + 1; // default EX
+    // EX stage becomes free when previous instruction leaves EX (enters MEM or MEM/WB)
+    let exCycle = Math.max(stageTimings[i - 1][3], stageTimings[i][1] + 1);
 
+    // Check Data Hazards
     const consumerHazards = hazards.filter(h => h.consumerIdx === i);
 
     for (const h of consumerHazards) {
       const producerIdx = h.producerIdx;
-
       const producerEX = stageTimings[producerIdx][2];
       const producerMEM = stageTimings[producerIdx][3];
       const producerWB = stageTimings[producerIdx][numStages - 1];
@@ -53,20 +65,30 @@ export function buildSchedule(parsedInstructions, hazards, pipelineType, forward
           readyCycle = producerEX + 1;
         }
       } else {
-        // No forwarding: wait until WB completes
-        readyCycle = producerWB;
+        // No forwarding: consumer reads in ID AFTER producer writes in WB
+        if (pipelineType === '5-stage') {
+          // 5-stage: WB is a dedicated write stage → split-cycle applies
+          // (write first half, read second half of same cycle)
+          // Consumer's EX = producerWB + 1
+          readyCycle = producerWB + 1;
+        } else {
+          // 4-stage: MEM/WB combines memory access + write → no split-cycle
+          // Register write happens at END of MEM/WB, consumer reads NEXT cycle
+          // Consumer's EX = producerWB + 2
+          readyCycle = producerWB + 2;
+        }
       }
 
-      // 🔥 CRITICAL FIX: take MAX, do NOT accumulate delays
+      // Take MAX of all hazard delays and structural delays
       exCycle = Math.max(exCycle, readyCycle);
     }
 
     // Assign EX
     stageTimings[i][2] = exCycle;
 
-    // Fill remaining stages sequentially
+    // Fill remaining stages sequentially, respecting previous instruction's pipeline occupancy
     for (let s = 3; s < numStages; s++) {
-      stageTimings[i][s] = stageTimings[i][s - 1] + 1;
+      stageTimings[i][s] = Math.max(stageTimings[i - 1][s] + 1, stageTimings[i][s - 1] + 1);
     }
   }
 
@@ -81,20 +103,20 @@ export function buildSchedule(parsedInstructions, hazards, pipelineType, forward
   for (let i = 0; i < numInstr; i++) {
     const timings = stageTimings[i];
 
-    // IF and ID
-    schedule[i][timings[0] - 1] = STAGES[0];
-    schedule[i][timings[1] - 1] = STAGES[1];
-
-    // Insert stalls between ID and EX
-    const stallCount = timings[2] - (timings[1] + 1);
-
-    for (let s = 0; s < stallCount; s++) {
-      schedule[i][timings[1] + s] = 'STALL';
+    // Place actual stages at their computed cycles
+    for (let s = 0; s < numStages; s++) {
+      schedule[i][timings[s] - 1] = STAGES[s];
     }
 
-    // Remaining stages
-    for (let s = 2; s < numStages; s++) {
-      schedule[i][timings[s] - 1] = STAGES[s];
+    // Fill any execution gaps with 'STALL'
+    // This dynamically handles stalls anywhere in the pipeline (IF/ID or ID/EX)
+    const startCycle = timings[0] - 1;
+    const endCycle = timings[numStages - 1] - 1;
+
+    for (let c = startCycle + 1; c < endCycle; c++) {
+      if (schedule[i][c] === null) {
+        schedule[i][c] = 'STALL';
+      }
     }
   }
 
