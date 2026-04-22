@@ -1,12 +1,69 @@
-# React + Vite
+# Pipeline Hazard Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive, high-fidelity web application designed to simulate and visualize pipeline hazards in computer architecture. Built with **React**, **Vite**, and **Framer Motion**, this simulator features a futuristic "space station deck" aesthetic and provides a deep dive into instruction flow, hazard detection, and resolution strategies.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Interactive Pipeline Grid**: Visualize 4-stage and 5-stage pipeline executions.
+- **Hazard Detection**: Real-time identification of RAW (Read-After-Write) hazards.
+- **Resolution Strategies**: Toggle between **Stalling** and **Data Forwarding** to see how hazards are handled.
+- **Dynamic Diagnostics**: Detailed hazard panels showing exactly where and why a stall or forward occurred.
+- **Futuristic UI**: A premium dark-mode interface with smooth animations and micro-interactions.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Framework**: React 19
+- **Bundler**: Vite
+- **Styling**: Tailwind CSS 4
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+
+## 📥 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- npm (comes with Node.js)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Rejin18077/FOCS-Assignment.git
+   ```
+
+2. **Navigate to the project directory:**
+   ```bash
+   cd FOCS-Assignment
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+### Running Locally
+
+To start the development server:
+```bash
+npm run dev
+```
+Once started, the application will be available at `http://localhost:5173`.
+
+### Building for Production
+
+To create an optimized production build:
+```bash
+npm run build
+```
+
+## 📖 How to Use
+
+1. **Enter Instructions**: Use the instruction panel to input assembly-like instructions (e.g., `ADD R1, R2, R3`).
+2. **Configure Pipeline**: Choose between different pipeline stages and toggle forwarding on/off.
+3. **Step Through**: Use the controls to step through the cycles or run the simulation automatically.
+4. **Analyze Hazards**: Observe the hazard panel at the bottom to see detailed diagnostics of stalls and data forwarding.
+
+---
+
+Built as part of the **FOCS Assignment**.
