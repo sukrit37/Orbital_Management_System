@@ -5,6 +5,7 @@ export function detectHazards(parsedInstructions) {
 
   for (let i = 0; i < parsedInstructions.length; i++) {
     const consumer = parsedInstructions[i];
+    const isBranch = consumer.type === 'B';
 
     for (const srcReg of consumer.src) {
       for (let j = i - 1; j >= 0; j--) {
@@ -14,9 +15,13 @@ export function detectHazards(parsedInstructions) {
           hazards.push({
             consumerIdx: i,
             producerIdx: j,
+            consumerId: consumer.id,
+            producerId: producer.id,
             register: srcReg,
-            producerOpcode: producer.opcode
+            producerOpcode: producer.opcode,
+            isBranchHazard: isBranch
           });
+
           break;
         }
       }
@@ -24,4 +29,4 @@ export function detectHazards(parsedInstructions) {
   }
 
   return hazards;
-}
+}

@@ -76,12 +76,12 @@ function App() {
   return (
     <div className="flex flex-col h-screen bg-bg-primary overflow-hidden">
       <Navbar />
-      
+
       <main className="flex-1 flex overflow-hidden p-6 gap-6">
         {/* Left Sidebar */}
         <div className="w-80 flex flex-col gap-6 shrink-0 h-full overflow-y-auto pr-2 custom-scrollbar">
           <div className="shrink-0">
-            <ConfigPanel 
+            <ConfigPanel
               pipelineType={pipelineType}
               setPipelineType={(val) => { setPipelineType(val); handleReset(); }}
               forwardingEnabled={forwardingEnabled}
@@ -89,9 +89,9 @@ function App() {
             />
           </div>
           <div className="shrink-0 min-h-[500px]">
-            <InstructionPanel 
-              instructions={instructions} 
-              setInstructions={setInstructions} 
+            <InstructionPanel
+              instructions={instructions}
+              setInstructions={setInstructions}
               onReset={handleReset}
             />
           </div>
@@ -99,7 +99,7 @@ function App() {
 
         {/* Center Content */}
         <div className="flex-1 min-h-0 flex flex-col gap-6 h-full overflow-y-auto pr-2 custom-scrollbar">
-          <ControlBar 
+          <ControlBar
             currentCycle={currentCycle}
             onStep={handleStep}
             onRun={toggleRun}
@@ -109,9 +109,9 @@ function App() {
             speed={speed}
             setSpeed={setSpeed}
           />
-          
+
           <div className="shrink-0">
-            <PipelineGrid 
+            <PipelineGrid
               instructions={instructions}
               schedule={schedule}
               currentCycle={currentCycle}
@@ -120,7 +120,7 @@ function App() {
           </div>
 
           <div className="h-48 shrink-0">
-            <HazardPanel 
+            <HazardPanel
               hazards={hazards}
               forwardingEnabled={forwardingEnabled}
             />
