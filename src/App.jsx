@@ -29,7 +29,7 @@ function App() {
     const detectedHazards = detectHazards(parsed);
     const computedSchedule = buildSchedule(parsed, detectedHazards, pipelineType, forwardingEnabled);
     const computedPaths = identifyForwardingPaths(detectedHazards, computedSchedule, pipelineType, forwardingEnabled);
-
+    
     return {
       schedule: computedSchedule,
       hazards: detectedHazards,
