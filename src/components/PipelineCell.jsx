@@ -21,7 +21,7 @@ export default function PipelineCell({ stage, isVisible, isActive, forwardingTyp
     >
       {stage}
       {forwardingType && (
-        <span className="forwarding-badge" title={`Forwarded via ${forwardingType}`}>
+        <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-500 rounded-full flex items-center justify-center text-[8px] text-black font-bold shadow-lg" title={`Forwarded via ${forwardingType}`}>
           F
         </span>
       )}

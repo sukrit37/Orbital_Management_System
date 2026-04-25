@@ -3,16 +3,18 @@ import { STAGES_4, STAGES_5 } from '../utils/constants';
 /**
  * Builds the pipeline schedule based on instructions, configuration, and hazards.
  * 
+ * Stall propagation rules (standard MIPS pipeline):
+ *   - IF[i] can start only when instruction i-1 has LEFT the IF stage (entered ID).
+ *     i.e., IF[i] >= ID[i-1]   (and also >= IF[i-1]+1)
+ *   - ID[i] can start only when instruction i-1 has LEFT the ID stage (entered EX).
+ *     i.e., ID[i] >= EX[i-1]   (and also >= IF[i]+1)
+ * 
  * @param {Array} parsedInstructions 
  * @param {Array} hazards 
  * @param {'4-stage' | '5-stage'} pipelineType 
  * @param {boolean} forwardingEnabled 
  * @returns {Array<Array<string|null>>} schedule
  */
-// scheduler.js
-
-// scheduler.js
-
 export function buildSchedule(parsedInstructions, hazards, pipelineType, forwardingEnabled) {
   const STAGES = pipelineType === '5-stage'
     ? ['IF', 'ID', 'EX', 'MEM', 'WB']
@@ -34,11 +36,11 @@ export function buildSchedule(parsedInstructions, hazards, pipelineType, forward
       continue;
     }
 
-    // IF stage starts after previous IF
-    stageTimings[i][0] = stageTimings[i - 1][0] + 1;
+    // IF: can fetch only when prev has left IF (entered ID)
+    stageTimings[i][0] = Math.max(stageTimings[i - 1][0] + 1, stageTimings[i - 1][1]);
 
-    // ID stage starts after current IF, but can be delayed by previous ID (structural/stall)
-    stageTimings[i][1] = Math.max(stageTimings[i][0] + 1, stageTimings[i - 1][1] + 1);
+    // ID: can decode only when prev has left ID (entered EX)
+    stageTimings[i][1] = Math.max(stageTimings[i][0] + 1, stageTimings[i - 1][2]);
 
     // Initial guess for EX cycle
     let exCycle = stageTimings[i][1] + 1;
